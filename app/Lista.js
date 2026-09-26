@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import { sql } from '@/lib/db';
 import { toggleAdesione } from './actions';
 import { TERNA } from '@/lib/categorie';
@@ -7,7 +8,9 @@ const d = x => new Date(x + 'T12:00');
 const gg = x => d(x).toLocaleDateString('it-IT', { weekday: 'short' });
 const mm = x => d(x).toLocaleDateString('it-IT', { month: 'short' });
 
-export default async function Lista({ u, passate }) {
+export default async function Lista({ u, passate, cat = null }) {
+  const h = await headers();
+  const site = `${h.get('x-forwarded-proto') || 'https'}://${h.get('host')}`;
   const rows = await sql`
     SELECT p.id, p.user_id, to_char(p.data,'YYYY-MM-DD') data, to_char(p.ora,'HH24:MI') ora, p.casa, p.ospite, p.campo, p.categoria, p.ar1, p.ar2, p.quarto, p.tmo,
       u.nome || ' ' || u.cognome arbitro,
@@ -15,12 +18,13 @@ export default async function Lista({ u, passate }) {
         FROM adesioni a JOIN users x ON x.id = a.user_id WHERE a.partita_id = p.id), '[]') ade
     FROM partite p JOIN users u ON u.id = p.user_id
     CROSS JOIN (SELECT (now() AT TIME ZONE 'Europe/Rome')::date oggi) t
-    WHERE (p.data < t.oggi) = ${!!passate}
+    WHERE (p.data < t.oggi) = ${!!passate} AND (${cat}::text IS NULL OR p.categoria = ${cat})
     ORDER BY CASE WHEN ${!!passate} THEN t.oggi - p.data ELSE p.data - t.oggi END, p.ora`;
   if (!rows.length) return <div className="empty">🏉<p>Nessuna partita{passate ? ' nello storico' : ' in programma'}.</p></div>;
   return rows.map(p => {
     const io = p.ade.some(a => a.id === u.id);
     const mia = p.user_id === u.id || u.admin;
+    const wa = `🏉 ${p.categoria} – ${d(p.data).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })} ore ${p.ora}\n${p.casa} vs ${p.ospite}\n📍 ${p.campo}\n🟢 Arbitro: ${p.arbitro}\n\nVieni a vederlo? ${site}`;
     return (
       <div className="card" key={p.id} style={{ '--c': COL[p.categoria] }}>
         <div className="cal"><span>{gg(p.data)}</span><b>{d(p.data).getDate()}</b><span>{mm(p.data)}</span><i>{p.ora}</i></div>
@@ -43,7 +47,9 @@ export default async function Lista({ u, passate }) {
               <input type="hidden" name="id" value={p.id} />
               <button className={io ? 'b o' : 'b'}>{io ? 'Non vengo più' : '🙋 Vengo a vederti'}</button>
             </form>}
-            {mia && <a href={`/partita/${p.id}`}>Modifica</a>}
+            <a className="ic" href={`https://wa.me/?text=${encodeURIComponent(wa)}`} target="_blank" rel="noopener">WhatsApp</a>
+            <a className="ic" href={`/partita/${p.id}/ics`}>📅 Calendario</a>
+            {mia && <a className="ic" href={`/partita/${p.id}`}>✏️ Modifica</a>}
           </div>
         </div>
       </div>

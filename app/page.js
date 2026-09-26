@@ -1,7 +1,9 @@
 import { requireUser } from '@/lib/auth';
 import Lista from './Lista';
+import Filtro from './Filtro';
 
-export default async function Home() {
+export default async function Page({ searchParams }) {
   const u = await requireUser();
-  return <><h1>Prossime partite</h1><Lista u={u} /></>;
+  const cat = (await searchParams)?.cat;
+  return <><h1>Prossime partite</h1><Filtro base="/" cat={cat} /><Lista u={u} cat={cat} /></>;
 }

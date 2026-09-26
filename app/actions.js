@@ -80,3 +80,21 @@ export async function toggleAdmin(f) {
   if (u.admin && id !== u.id) await sql`UPDATE users SET admin = NOT admin WHERE id=${id}`;
   revalidatePath('/admin');
 }
+
+export async function cambiaPassword(f) {
+  const u = await requireUser();
+  const [r] = await sql`SELECT pass FROM users WHERE id=${u.id}`;
+  if (!(await bcrypt.compare(s(f, 'old'), r.pass))) err('/profilo', 'Password attuale errata');
+  if (s(f, 'pass').length < 6) err('/profilo', 'Nuova password almeno 6 caratteri');
+  await sql`UPDATE users SET pass=${await bcrypt.hash(s(f, 'pass'), 10)} WHERE id=${u.id}`;
+  redirect('/profilo?ok=1');
+}
+
+export async function resetPassword(f) {
+  const u = await requireUser();
+  const id = Number(f.get('id')), pass = s(f, 'pass');
+  if (!u.admin || pass.length < 6) err('/admin', 'Password almeno 6 caratteri');
+  await sql`UPDATE users SET pass=${await bcrypt.hash(pass, 10)} WHERE id=${id}`;
+  await sql`DELETE FROM sessions WHERE user_id=${id}`;
+  redirect('/admin?ok=1');
+}
