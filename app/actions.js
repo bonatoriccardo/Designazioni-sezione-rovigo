@@ -2,7 +2,8 @@
 import bcrypt from 'bcryptjs';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { sql, CATEGORIE } from '@/lib/db';
+import { sql } from '@/lib/db';
+import { CATEGORIE, CON_TERNA, TERNA } from '@/lib/categorie';
 import { getUser, requireUser, startSession, endSession } from '@/lib/auth';
 
 const s = (f, k) => String(f.get(k) ?? '').trim();
@@ -35,6 +36,7 @@ export async function logout() {
 function leggiPartita(f, back) {
   const p = { data: s(f, 'data'), ora: s(f, 'ora'), casa: s(f, 'casa'), ospite: s(f, 'ospite'), campo: s(f, 'campo'), categoria: s(f, 'categoria') };
   if (Object.values(p).some(v => !v) || !CATEGORIE.includes(p.categoria)) err(back, 'Compila tutti i campi');
+  for (const [k] of TERNA) p[k] = CON_TERNA.includes(p.categoria) ? s(f, k) || null : null;
   return p;
 }
 
@@ -43,11 +45,12 @@ export async function salvaPartita(f) {
   const id = Number(f.get('id')) || null;
   const p = leggiPartita(f, id ? `/partita/${id}` : '/nuova');
   if (id) {
-    await sql`UPDATE partite SET data=${p.data}, ora=${p.ora}, casa=${p.casa}, ospite=${p.ospite}, campo=${p.campo}, categoria=${p.categoria}
+    await sql`UPDATE partite SET data=${p.data}, ora=${p.ora}, casa=${p.casa}, ospite=${p.ospite}, campo=${p.campo}, categoria=${p.categoria},
+      ar1=${p.ar1}, ar2=${p.ar2}, quarto=${p.quarto}, tmo=${p.tmo}
       WHERE id=${id} AND (user_id=${u.id} OR ${u.admin})`;
   } else {
-    await sql`INSERT INTO partite (user_id, data, ora, casa, ospite, campo, categoria)
-      VALUES (${u.id}, ${p.data}, ${p.ora}, ${p.casa}, ${p.ospite}, ${p.campo}, ${p.categoria})`;
+    await sql`INSERT INTO partite (user_id, data, ora, casa, ospite, campo, categoria, ar1, ar2, quarto, tmo)
+      VALUES (${u.id}, ${p.data}, ${p.ora}, ${p.casa}, ${p.ospite}, ${p.campo}, ${p.categoria}, ${p.ar1}, ${p.ar2}, ${p.quarto}, ${p.tmo})`;
   }
   revalidatePath('/');
   redirect('/');

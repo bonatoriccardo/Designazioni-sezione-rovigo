@@ -1,14 +1,15 @@
 import { sql } from '@/lib/db';
 import { toggleAdesione } from './actions';
+import { TERNA } from '@/lib/categorie';
 
-const COL = { U14: 'var(--oli)', U16: 'var(--olid)', U18: 'var(--red)', 'SERIE C': 'var(--bord)' };
+const COL = { U14: 'var(--oli)', U16: 'var(--olid)', U18: '#c8651b', 'SERIE C': 'var(--red)', 'SERIE B': 'var(--bord)', 'SERIE A': '#3a2a5e', 'SERIE A ELITE': '#1d1a1a' };
 const d = x => new Date(x + 'T12:00');
 const gg = x => d(x).toLocaleDateString('it-IT', { weekday: 'short' });
 const mm = x => d(x).toLocaleDateString('it-IT', { month: 'short' });
 
 export default async function Lista({ u, passate }) {
   const rows = await sql`
-    SELECT p.id, p.user_id, to_char(p.data,'YYYY-MM-DD') data, to_char(p.ora,'HH24:MI') ora, p.casa, p.ospite, p.campo, p.categoria,
+    SELECT p.id, p.user_id, to_char(p.data,'YYYY-MM-DD') data, to_char(p.ora,'HH24:MI') ora, p.casa, p.ospite, p.campo, p.categoria, p.ar1, p.ar2, p.quarto, p.tmo,
       u.nome || ' ' || u.cognome arbitro,
       COALESCE((SELECT json_agg(json_build_object('id', x.id, 'n', x.nome || ' ' || x.cognome) ORDER BY x.cognome)
         FROM adesioni a JOIN users x ON x.id = a.user_id WHERE a.partita_id = p.id), '[]') ade
@@ -27,7 +28,8 @@ export default async function Lista({ u, passate }) {
           <span className="tag">{p.categoria}</span>
           <h2>{p.casa} <span className="mut">vs</span> {p.ospite}</h2>
           <div>📍 <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.campo)}`} target="_blank" rel="noopener">{p.campo}</a></div>
-          <div className="mut">🟢 Arbitro: <b>{p.arbitro}</b></div>
+          <div className="mut">🟢 Arbitro: <b>{p.arbitro}</b>
+            {TERNA.filter(([k]) => p[k]).map(([k, l]) => <span key={k}> · {l}: <b>{p[k]}</b></span>)}</div>
           <div className="chips">
             {p.ade.length ? p.ade.map(a => (
               <span className="chip" key={a.id}>👀 {a.n}

@@ -6,7 +6,7 @@ import Err from '../../Err';
 
 export default async function Modifica({ params, searchParams }) {
   const u = await requireUser();
-  const [p] = await sql`SELECT id, user_id, to_char(data,'YYYY-MM-DD') data, to_char(ora,'HH24:MI') ora, casa, ospite, campo, categoria
+  const [p] = await sql`SELECT id, user_id, to_char(data,'YYYY-MM-DD') data, to_char(ora,'HH24:MI') ora, casa, ospite, campo, categoria, ar1, ar2, quarto, tmo
     FROM partite WHERE id = ${Number((await params).id)}`;
   if (!p || (p.user_id !== u.id && !u.admin)) notFound();
   return <><h1>Modifica partita</h1><Err sp={searchParams} /><FormPartita p={p} /></>;

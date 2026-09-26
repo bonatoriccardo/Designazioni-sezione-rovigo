@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS partite (
   casa TEXT NOT NULL,
   ospite TEXT NOT NULL,
   campo TEXT NOT NULL,
-  categoria TEXT NOT NULL CHECK (categoria IN ('U14','U16','U18','SERIE C'))
+  categoria TEXT NOT NULL,
+  ar1 TEXT, ar2 TEXT, quarto TEXT, tmo TEXT
 );
 CREATE TABLE IF NOT EXISTS adesioni (
   partita_id INT NOT NULL REFERENCES partite ON DELETE CASCADE,
