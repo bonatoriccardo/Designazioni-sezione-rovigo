@@ -12,7 +12,7 @@ export default async function Lista({ u, passate, cat = null }) {
   const h = await headers();
   const site = `${h.get('x-forwarded-proto') || 'https'}://${h.get('host')}`;
   const rows = await sql`
-    SELECT p.id, p.user_id, to_char(p.data,'YYYY-MM-DD') data, to_char(p.ora,'HH24:MI') ora, p.casa, p.ospite, p.campo, p.categoria,
+    SELECT p.id, p.user_id, to_char(p.data,'YYYY-MM-DD') data, to_char(p.ora,'HH24:MI') ora, p.casa, p.ospite, p.terza, p.campo, p.categoria,
       p.ar1, p.ar2, p.quarto, p.tmo, p.lat, p.lon, p.indirizzo,
       u.nome || ' ' || u.cognome arbitro,
       COALESCE((SELECT json_agg(json_build_object('id', x.id, 'n', x.nome || ' ' || x.cognome) ORDER BY x.cognome)
@@ -30,13 +30,13 @@ export default async function Lista({ u, passate, cat = null }) {
       {partite.map(p => {
         const io = p.ade.some(a => a.id === u.id);
         const mia = p.user_id === u.id || u.admin;
-        const wa = `*${p.categoria}* · ${giorno(p.data)} ore ${p.ora}\n${p.casa} – ${p.ospite}\nCampo: ${p.campo}\n${maps(p)}\nArbitro: ${p.arbitro}\n\nChi viene a vederlo? ${site}`;
+        const wa = `*${p.categoria}* · ${giorno(p.data)} ore ${p.ora}\n${[p.casa, p.ospite, p.terza].filter(Boolean).join(' – ')}${p.terza ? ' (triangolare)' : ''}\nCampo: ${p.campo}\n${maps(p)}\nArbitro: ${p.arbitro}\n\nChi viene a vederlo? ${site}`;
         return (
           <article className="match" key={p.id} style={{ '--c': COL[p.categoria] }}>
             <div className="ora"><b>{p.ora}</b></div>
             <div className="info">
-              <span className="tag">{p.categoria}</span>
-              <div className="teams">{p.casa}<i>v</i>{p.ospite}</div>
+              <span className="tag">{p.categoria}</span>{p.terza && <span className="tag tri">TRIANGOLARE</span>}
+              <div className="teams">{p.casa}<i>v</i>{p.ospite}{p.terza && <><i>v</i>{p.terza}</>}</div>
               <div className="meta"><a href={maps(p)} target="_blank" rel="noopener">{p.campo}</a></div>
               <div className="meta">Arbitro <b>{p.arbitro}</b>
                 {TERNA.filter(([k]) => p[k]).map(([k, l]) => <span key={k}> · {l} <b>{p[k]}</b></span>)}</div>

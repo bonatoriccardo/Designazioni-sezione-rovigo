@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS partite (
   ora TIME NOT NULL,
   casa TEXT NOT NULL,
   ospite TEXT NOT NULL,
+  terza TEXT,
   campo TEXT NOT NULL,
   categoria TEXT NOT NULL,
   ar1 TEXT, ar2 TEXT, quarto TEXT, tmo TEXT,

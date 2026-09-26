@@ -6,7 +6,7 @@ import Err from '../../Err';
 
 export default async function Modifica({ params, searchParams }) {
   const u = await requireUser();
-  const [p] = await sql`SELECT id, user_id, to_char(data,'YYYY-MM-DD') data, to_char(ora,'HH24:MI') ora, casa, ospite, campo, categoria,
+  const [p] = await sql`SELECT id, user_id, to_char(data,'YYYY-MM-DD') data, to_char(ora,'HH24:MI') ora, casa, ospite, terza, campo, categoria,
     ar1, ar2, quarto, tmo, lat, lon, indirizzo FROM partite WHERE id = ${Number((await params).id)}`;
   if (!p || (p.user_id !== u.id && !u.admin)) notFound();
   const noti = await sql`SELECT DISTINCT ON (campo) campo, lat, lon, indirizzo FROM partite WHERE lat IS NOT NULL ORDER BY campo, id DESC`;

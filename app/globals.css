@@ -105,3 +105,6 @@ legend{font-family:var(--f-cond);text-transform:uppercase;letter-spacing:.07em;f
 details{width:100%}summary{cursor:pointer;font-size:.88rem;color:var(--mut)}
 
 @media (max-width:560px){.two:not(.keep){grid-template-columns:1fr}.brand small{display:none}.brand img{width:48px;height:48px}.match{grid-template-columns:62px 1fr}.info{padding:11px 13px}}
+.tag.tri{background:transparent;color:var(--c);box-shadow:inset 0 0 0 1.5px var(--c);margin-left:6px}
+label.check{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--ink);cursor:pointer}
+label.check input{width:18px;height:18px;padding:0;accent-color:var(--red)}
