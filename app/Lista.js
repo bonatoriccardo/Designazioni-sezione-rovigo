@@ -26,7 +26,7 @@ export default async function Lista({ u, passate }) {
         <div className="body">
           <span className="tag">{p.categoria}</span>
           <h2>{p.casa} <span className="mut">vs</span> {p.ospite}</h2>
-          <div>📍 {p.campo}</div>
+          <div>📍 <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.campo)}`} target="_blank" rel="noopener">{p.campo}</a></div>
           <div className="mut">🟢 Arbitro: <b>{p.arbitro}</b></div>
           <div className="chips">
             {p.ade.length ? p.ade.map(a => (

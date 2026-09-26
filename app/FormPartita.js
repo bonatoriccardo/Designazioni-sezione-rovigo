@@ -14,7 +14,7 @@ export default function FormPartita({ p = {} }) {
       </div>
       <label>Squadra di casa<input name="casa" defaultValue={p.casa} required /></label>
       <label>Squadra ospite<input name="ospite" defaultValue={p.ospite} required /></label>
-      <label>Campo / indirizzo<input name="campo" defaultValue={p.campo} required /></label>
+      <label>Campo / indirizzo (es. "Stadio Battaglini, Rovigo")<input name="campo" defaultValue={p.campo} required /></label>
       <div><button className="b">Salva designazione</button></div>
     </form>
     {p.id && <form action={eliminaPartita} style={{ marginTop: 20 }}>
