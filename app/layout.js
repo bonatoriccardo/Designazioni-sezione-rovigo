@@ -1,11 +1,11 @@
 import './globals.css';
 import Link from 'next/link';
-import { Roboto_Slab, Inter } from 'next/font/google';
+import { Barlow, Barlow_Condensed } from 'next/font/google';
 import { getUser } from '@/lib/auth';
 import { logout } from './actions';
 
-const slab = Roboto_Slab({ subsets: ['latin'], weight: ['400', '700', '800'], variable: '--f-slab' });
-const body = Inter({ subsets: ['latin'], variable: '--f-body' });
+const cond = Barlow_Condensed({ subsets: ['latin'], weight: ['400', '600', '700'], variable: '--f-cond' });
+const body = Barlow({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--f-body' });
 
 export const metadata = { title: 'Designazioni · Arbitri Rovigo', appleWebApp: { title: 'Designazioni', statusBarStyle: 'black-translucent' } };
 export const viewport = { themeColor: '#5e0f1e' };
@@ -13,22 +13,22 @@ export const viewport = { themeColor: '#5e0f1e' };
 export default async function Layout({ children }) {
   const u = await getUser();
   return (
-    <html lang="it" className={`${slab.variable} ${body.variable}`}>
+    <html lang="it" className={`${cond.variable} ${body.variable}`}>
       <body>
         <header><div className="hd">
           <Link href="/" className="brand"><img src="/emblema.png" alt="" />
-            <span>Designazioni<small>Arbitri Rovigo</small></span></Link>
+            <span><b>Designazioni</b><small>ARBITRI ROVIGO</small></span></Link>
           <nav>
             {u ? (<>
               <Link href="/">Partite</Link>
               <Link href="/storico">Storico</Link>
-              {u.admin && <Link href="/admin">Admin</Link>}
-              <Link href="/nuova" className="cta">+ Designazione</Link>
-              <Link href="/profilo" title="Profilo">👤 {u.nome}</Link>
-              <form action={logout}><button title="Esci">Esci</button></form>
+              {u.admin && <Link href="/admin">Utenti</Link>}
+              <Link href="/profilo">Profilo</Link>
+              <form action={logout}><button>Esci</button></form>
+              <Link href="/nuova" className="add">+ Designazione</Link>
             </>) : (<>
               <Link href="/login">Entra</Link>
-              <Link href="/registrati" className="cta">Registrati</Link>
+              <Link href="/registrati" className="add">Registrati</Link>
             </>)}
           </nav>
         </div></header>

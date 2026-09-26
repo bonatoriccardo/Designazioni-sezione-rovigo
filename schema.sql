@@ -20,7 +20,8 @@ CREATE TABLE IF NOT EXISTS partite (
   ospite TEXT NOT NULL,
   campo TEXT NOT NULL,
   categoria TEXT NOT NULL,
-  ar1 TEXT, ar2 TEXT, quarto TEXT, tmo TEXT
+  ar1 TEXT, ar2 TEXT, quarto TEXT, tmo TEXT,
+  lat DOUBLE PRECISION, lon DOUBLE PRECISION, indirizzo TEXT
 );
 CREATE TABLE IF NOT EXISTS adesioni (
   partita_id INT NOT NULL REFERENCES partite ON DELETE CASCADE,

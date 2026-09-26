@@ -5,17 +5,17 @@ import Err from '../Err';
 export default function Page({ searchParams }) {
   return (
     <div className="auth">
-      <img src="/logo.png" alt="Arbitri Rovigo" />
+      <img className="logo" src="/logo.png" alt="Arbitri Rovigo" />
       <h1>Entra</h1>
-      <p className="mut">Accedi per vedere le designazioni della sezione.</p>
+      <p className="sub">Accedi con nome, cognome e password.</p>
       <Err sp={searchParams} />
-      <form action={login} className="f">
+      <form action={login} className="form">
         <label>Nome<input name="nome" required autoComplete="given-name" /></label>
         <label>Cognome<input name="cognome" required autoComplete="family-name" /></label>
         <label>Password<input name="pass" type="password" required minLength={6} /></label>
-        <button className="b">Entra</button>
+        <button className="btn">Entra</button>
       </form>
-      <p className="mut">Non hai un account? <Link href="/registrati">Registrati</Link></p>
+      <p className="foot">Non hai un account? <Link href="/registrati">Registrati</Link></p>
     </div>
   );
 }

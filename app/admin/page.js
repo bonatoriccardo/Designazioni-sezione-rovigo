@@ -14,17 +14,15 @@ export default async function Admin({ searchParams }) {
     {ok && <p className="okmsg">Password reimpostata ✔ Comunicala all'interessato.</p>}
     <Err sp={searchParams} />
     {users.map(x => (
-      <div className="box" key={x.id} style={{ marginBottom: 10 }}>
-        <div className="row">
-          <span style={{ flex: 1 }}><b>{x.cognome} {x.nome}</b> {x.admin && <span className="tag">admin</span>}</span>
-          {x.id !== u.id && <form action={toggleAdmin}><input type="hidden" name="id" value={x.id} />
-            <button className="l">{x.admin ? 'Togli admin' : 'Rendi admin'}</button></form>}
-        </div>
-        {x.id !== u.id && <details><summary className="mut">Reimposta password</summary>
-          <form action={resetPassword} className="row" style={{ marginTop: 8 }}>
+      <div className="rowu" key={x.id}>
+        <span className="n">{x.cognome} {x.nome}{x.admin && <span className="badge">ADMIN</span>}</span>
+        {x.id !== u.id && <form action={toggleAdmin}><input type="hidden" name="id" value={x.id} />
+          <button className="link">{x.admin ? 'Togli admin' : 'Rendi admin'}</button></form>}
+        {x.id !== u.id && <details><summary>Reimposta password</summary>
+          <form action={resetPassword} className="inl" style={{ marginTop: 8 }}>
             <input type="hidden" name="id" value={x.id} />
-            <input name="pass" placeholder="Nuova password" minLength={6} required style={{ flex: 1 }} />
-            <button className="b">Imposta</button>
+            <input name="pass" type="password" placeholder="Nuova password" minLength={6} required />
+            <button className="btn sm">Imposta</button>
           </form></details>}
       </div>
     ))}

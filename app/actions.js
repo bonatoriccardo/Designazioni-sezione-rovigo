@@ -7,10 +7,11 @@ import { CATEGORIE, CON_TERNA, TERNA } from '@/lib/categorie';
 import { getUser, requireUser, startSession, endSession } from '@/lib/auth';
 
 const s = (f, k) => String(f.get(k) ?? '').trim();
+const S = (f, k) => s(f, k).replace(/\s+/g, ' ').toUpperCase();
 const err = (path, msg) => redirect(`${path}?e=${encodeURIComponent(msg)}`);
 
 export async function registrati(f) {
-  const nome = s(f, 'nome'), cognome = s(f, 'cognome'), pass = s(f, 'pass');
+  const nome = S(f, 'nome'), cognome = S(f, 'cognome'), pass = s(f, 'pass');
   if (!nome || !cognome || pass.length < 6) err('/registrati', 'Compila tutto, password almeno 6 caratteri');
   const hash = await bcrypt.hash(pass, 10);
   const [u] = await sql`INSERT INTO users (nome, cognome, pass, admin)
@@ -34,9 +35,12 @@ export async function logout() {
 }
 
 function leggiPartita(f, back) {
-  const p = { data: s(f, 'data'), ora: s(f, 'ora'), casa: s(f, 'casa'), ospite: s(f, 'ospite'), campo: s(f, 'campo'), categoria: s(f, 'categoria') };
+  const p = { data: s(f, 'data'), ora: s(f, 'ora'), casa: S(f, 'casa'), ospite: S(f, 'ospite'), campo: S(f, 'campo'), categoria: s(f, 'categoria') };
   if (Object.values(p).some(v => !v) || !CATEGORIE.includes(p.categoria)) err(back, 'Compila tutti i campi');
-  for (const [k] of TERNA) p[k] = CON_TERNA.includes(p.categoria) ? s(f, k) || null : null;
+  for (const [k] of TERNA) p[k] = CON_TERNA.includes(p.categoria) ? S(f, k) || null : null;
+  const lat = parseFloat(f.get('lat')), lon = parseFloat(f.get('lon'));
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) err(back, 'Verifica il campo sulla mappa prima di salvare');
+  Object.assign(p, { lat, lon, indirizzo: s(f, 'indirizzo') || null });
   return p;
 }
 
@@ -46,11 +50,11 @@ export async function salvaPartita(f) {
   const p = leggiPartita(f, id ? `/partita/${id}` : '/nuova');
   if (id) {
     await sql`UPDATE partite SET data=${p.data}, ora=${p.ora}, casa=${p.casa}, ospite=${p.ospite}, campo=${p.campo}, categoria=${p.categoria},
-      ar1=${p.ar1}, ar2=${p.ar2}, quarto=${p.quarto}, tmo=${p.tmo}
+      ar1=${p.ar1}, ar2=${p.ar2}, quarto=${p.quarto}, tmo=${p.tmo}, lat=${p.lat}, lon=${p.lon}, indirizzo=${p.indirizzo}
       WHERE id=${id} AND (user_id=${u.id} OR ${u.admin})`;
   } else {
-    await sql`INSERT INTO partite (user_id, data, ora, casa, ospite, campo, categoria, ar1, ar2, quarto, tmo)
-      VALUES (${u.id}, ${p.data}, ${p.ora}, ${p.casa}, ${p.ospite}, ${p.campo}, ${p.categoria}, ${p.ar1}, ${p.ar2}, ${p.quarto}, ${p.tmo})`;
+    await sql`INSERT INTO partite (user_id, data, ora, casa, ospite, campo, categoria, ar1, ar2, quarto, tmo, lat, lon, indirizzo)
+      VALUES (${u.id}, ${p.data}, ${p.ora}, ${p.casa}, ${p.ospite}, ${p.campo}, ${p.categoria}, ${p.ar1}, ${p.ar2}, ${p.quarto}, ${p.tmo}, ${p.lat}, ${p.lon}, ${p.indirizzo})`;
   }
   revalidatePath('/');
   redirect('/');
