@@ -3,7 +3,7 @@ import { sql } from '@/lib/db';
 import { toggleAdesione } from './actions';
 import { TERNA, mapsUrl } from '@/lib/categorie';
 
-const COL = { U14: 'var(--oli)', U16: 'var(--olid)', U18: '#b5651d', 'SERIE C': 'var(--red)', 'SERIE B': 'var(--bord)', 'SERIE A': '#34406b', 'SERIE A ELITE': 'var(--ink)' };
+const COL = { U14: 'var(--oli)', U16: 'var(--olid)', U18: '#c0661c', 'SERIE C': 'var(--red)', 'SERIE B': 'var(--bord)', 'SERIE A': '#34406b', 'SERIE A ELITE': '#1d1a1a' };
 const d = x => new Date(x + 'T12:00');
 const giorno = x => d(x).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
 const maps = p => p.lat ? mapsUrl(p.lat, p.lon) : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.campo)}`;
@@ -33,15 +33,16 @@ export default async function Lista({ u, passate, cat = null }) {
         const wa = `*${p.categoria}* · ${giorno(p.data)} ore ${p.ora}\n${p.casa} – ${p.ospite}\nCampo: ${p.campo}\n${maps(p)}\nArbitro: ${p.arbitro}\n\nChi viene a vederlo? ${site}`;
         return (
           <article className="match" key={p.id} style={{ '--c': COL[p.categoria] }}>
-            <div className="ora"><b>{p.ora}</b><span>{p.categoria}</span></div>
+            <div className="ora"><b>{p.ora}</b></div>
             <div className="info">
+              <span className="tag">{p.categoria}</span>
               <div className="teams">{p.casa}<i>v</i>{p.ospite}</div>
               <div className="meta"><a href={maps(p)} target="_blank" rel="noopener">{p.campo}</a></div>
               <div className="meta">Arbitro <b>{p.arbitro}</b>
                 {TERNA.filter(([k]) => p[k]).map(([k, l]) => <span key={k}> · {l} <b>{p[k]}</b></span>)}</div>
               <div className="obs"><span className="lab">Osservatori</span>
-                {p.ade.length ? p.ade.map((a, i) => (
-                  <span key={a.id}>{i > 0 && ', '}{a.n}
+                {p.ade.length ? p.ade.map(a => (
+                  <span className="chip" key={a.id}>{a.n}
                     {u.admin && a.id !== u.id && <form action={toggleAdesione} style={{ display: 'inline' }}>
                       <input type="hidden" name="id" value={p.id} /><input type="hidden" name="uid" value={a.id} />
                       <button className="x" title="Rimuovi">×</button></form>}

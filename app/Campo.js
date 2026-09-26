@@ -30,7 +30,7 @@ export default function Campo({ p, noti }) {
       <label>Campo
         <div className="inl">
           <input name="campo" value={campo} onChange={e => scrivi(e.target.value)} list="campi-noti" required placeholder="Es. Stadio Battaglini, Rovigo" />
-          <button type="button" className="btn sec" onClick={cerca} disabled={campo.trim().length < 3}>Cerca</button>
+          <button type="button" className="btn sec sm" onClick={cerca} disabled={campo.trim().length < 3}>Cerca</button>
         </div>
       </label>
       <datalist id="campi-noti">{noti.map(c => <option key={c.campo} value={c.campo}>{c.indirizzo}</option>)}</datalist>
