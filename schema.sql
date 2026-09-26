@@ -1,0 +1,28 @@
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  nome TEXT NOT NULL,
+  cognome TEXT NOT NULL,
+  pass TEXT NOT NULL,
+  admin BOOLEAN NOT NULL DEFAULT false
+);
+CREATE UNIQUE INDEX IF NOT EXISTS users_nome ON users (lower(nome), lower(cognome));
+CREATE TABLE IF NOT EXISTS sessions (
+  token TEXT PRIMARY KEY,
+  user_id INT NOT NULL REFERENCES users ON DELETE CASCADE,
+  created TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS partite (
+  id SERIAL PRIMARY KEY,
+  user_id INT NOT NULL REFERENCES users ON DELETE CASCADE,
+  data DATE NOT NULL,
+  ora TIME NOT NULL,
+  casa TEXT NOT NULL,
+  ospite TEXT NOT NULL,
+  campo TEXT NOT NULL,
+  categoria TEXT NOT NULL CHECK (categoria IN ('U14','U16','U18','SERIE C'))
+);
+CREATE TABLE IF NOT EXISTS adesioni (
+  partita_id INT NOT NULL REFERENCES partite ON DELETE CASCADE,
+  user_id INT NOT NULL REFERENCES users ON DELETE CASCADE,
+  PRIMARY KEY (partita_id, user_id)
+);
