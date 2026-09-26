@@ -10,7 +10,7 @@ export default async function Admin() {
   return (<>
     <h1>Utenti</h1>
     {users.map(x => (
-      <div className="card row" key={x.id}>
+      <div className="box row" key={x.id} style={{ marginBottom: 10 }}>
         <span style={{ flex: 1 }}>{x.cognome} {x.nome} {x.admin && <span className="tag">admin</span>}</span>
         {x.id !== u.id && <form action={toggleAdmin}><input type="hidden" name="id" value={x.id} />
           <button className="l">{x.admin ? 'Togli admin' : 'Rendi admin'}</button></form>}
