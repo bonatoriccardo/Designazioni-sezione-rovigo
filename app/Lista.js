@@ -3,7 +3,7 @@ import { sql } from '@/lib/db';
 import { toggleAdesione } from './actions';
 import { TERNA, mapsUrl } from '@/lib/categorie';
 
-const COL = { U14: 'var(--oli)', U16: 'var(--olid)', U18: '#c0661c', 'SERIE C': 'var(--red)', 'SERIE B': 'var(--bord)', 'SERIE A': '#34406b', 'SERIE A ELITE': '#1d1a1a' };
+const COL = { U14: 'var(--oli)', U16: 'var(--olid)', U18: '#c0661c', 'SERIE C': 'var(--red)', 'SERIE B': 'var(--bord)', 'SERIE A': '#34406b', 'SERIE A ELITE': '#1d1a1a', 'COPPA ITALIA': '#1f6f5c' };
 const d = x => new Date(x + 'T12:00');
 const giorno = x => d(x).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
 const maps = p => p.lat ? mapsUrl(p.lat, p.lon) : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.campo)}`;
