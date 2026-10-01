@@ -14,7 +14,7 @@ export default async function Lista({ u, passate, cat = null }) {
   const rows = await sql`
     SELECT p.id, p.user_id, to_char(p.data,'YYYY-MM-DD') data, to_char(p.ora,'HH24:MI') ora, p.casa, p.ospite, p.terza, p.campo, p.categoria,
       p.ar1, p.ar2, p.quarto, p.tmo, p.lat, p.lon, p.indirizzo,
-      u.nome || ' ' || u.cognome arbitro,
+      COALESCE(p.arbitro_nome, u.nome || ' ' || u.cognome) arbitro, u.nome || ' ' || u.cognome autore,
       COALESCE((SELECT json_agg(json_build_object('id', x.id, 'n', x.nome || ' ' || x.cognome) ORDER BY x.cognome)
         FROM adesioni a JOIN users x ON x.id = a.user_id WHERE a.partita_id = p.id), '[]') ade
     FROM partite p JOIN users u ON u.id = p.user_id
@@ -40,6 +40,7 @@ export default async function Lista({ u, passate, cat = null }) {
               <div className="meta"><a href={maps(p)} target="_blank" rel="noopener">{p.campo}</a></div>
               <div className="meta">Arbitro <b>{p.arbitro}</b>
                 {TERNA.filter(([k]) => p[k]).map(([k, l]) => <span key={k}> · {l} <b>{p[k]}</b></span>)}</div>
+              {p.autore !== p.arbitro && <div className="meta">Inserita da {p.autore}</div>}
               <div className="obs"><span className="lab">Osservatori</span>
                 {p.ade.length ? p.ade.map(a => (
                   <span className="chip" key={a.id}>{a.n}

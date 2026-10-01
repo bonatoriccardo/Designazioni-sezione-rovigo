@@ -7,7 +7,7 @@ export async function GET(req, { params }) {
   if (!(await getUser())) return new Response('Non autorizzato', { status: 401 });
   const [p] = await sql`SELECT p.id, to_char(p.data,'YYYYMMDD') d, to_char(p.ora,'HH24MISS') o,
       to_char(p.data + p.ora + interval '2 hours','YYYYMMDD"T"HH24MISS') fine,
-      p.casa, p.ospite, p.terza, p.campo, p.categoria, p.lat, p.lon, p.indirizzo, u.nome || ' ' || u.cognome arbitro
+      p.casa, p.ospite, p.terza, p.campo, p.categoria, p.lat, p.lon, p.indirizzo, COALESCE(p.arbitro_nome, u.nome || ' ' || u.cognome) arbitro
     FROM partite p JOIN users u ON u.id = p.user_id WHERE p.id = ${Number((await params).id)}`;
   if (!p) return new Response('Non trovata', { status: 404 });
   const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Arbitri Rovigo//Designazioni//IT', 'BEGIN:VEVENT',

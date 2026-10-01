@@ -4,7 +4,7 @@ import { CATEGORIE, CON_TERNA, TERNA, TRIANGOLARE } from '@/lib/categorie';
 import { salvaPartita, eliminaPartita } from './actions';
 import Campo from './Campo';
 
-export default function FormPartita({ p = {}, noti = [] }) {
+export default function FormPartita({ p = {}, noti = [], io = '' }) {
   const [cat, setCat] = useState(p.categoria || CATEGORIE[0]);
   const [tri, setTri] = useState(!!p.terza);
   const isTri = TRIANGOLARE.includes(cat) && tri;
@@ -25,8 +25,9 @@ export default function FormPartita({ p = {}, noti = [] }) {
       {TRIANGOLARE.includes(cat) && <label className="check"><input type="checkbox" name="tri" checked={tri} onChange={e => setTri(e.target.checked)} /> Triangolare</label>}
       {isTri && <label>Terza squadra<input name="terza" defaultValue={p.terza ?? ''} required /></label>}
       <Campo p={p} noti={noti} />
-      {CON_TERNA.includes(cat) && <fieldset><legend>Team arbitrale · facoltativo</legend>
-        <div className="two">{TERNA.map(([k, l]) => <label key={k}>{l}<input name={k} defaultValue={p[k] ?? ''} /></label>)}</div>
+      {CON_TERNA.includes(cat) && <fieldset><legend>Team arbitrale</legend>
+        <div className="two">
+          <label>Arbitro<input name="arbitro_nome" defaultValue={p.arbitro_nome ?? p.autore ?? io} required /></label>{TERNA.map(([k, l]) => <label key={k}>{l}<input name={k} defaultValue={p[k] ?? ''} /></label>)}</div>
       </fieldset>}
       <div className="actions"><button className="btn">Salva designazione</button></div>
     </form>

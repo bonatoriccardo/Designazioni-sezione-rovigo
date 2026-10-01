@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS partite (
   terza TEXT,
   campo TEXT NOT NULL,
   categoria TEXT NOT NULL,
+  arbitro_nome TEXT,
   ar1 TEXT, ar2 TEXT, quarto TEXT, tmo TEXT,
   lat DOUBLE PRECISION, lon DOUBLE PRECISION, indirizzo TEXT
 );
