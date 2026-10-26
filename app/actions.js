@@ -53,11 +53,11 @@ export async function salvaPartita(f) {
   const p = leggiPartita(f, id ? `/partita/${id}` : '/nuova');
   if (id) {
     await sql`UPDATE partite SET data=${p.data}, ora=${p.ora}, casa=${p.casa}, ospite=${p.ospite}, terza=${p.terza}, campo=${p.campo}, categoria=${p.categoria},
-      arbitro_nome=${p.arbitro_nome}, ar1=${p.ar1}, ar2=${p.ar2}, quarto=${p.quarto}, tmo=${p.tmo}, mto=${p.mto}, lat=${p.lat}, lon=${p.lon}, indirizzo=${p.indirizzo}
+      arbitro_nome=${p.arbitro_nome}, ar1=${p.ar1}, ar2=${p.ar2}, quarto=${p.quarto}, quinto=${p.quinto}, sesto=${p.sesto}, tmo=${p.tmo}, mto=${p.mto}, lat=${p.lat}, lon=${p.lon}, indirizzo=${p.indirizzo}
       WHERE id=${id} AND (user_id=${u.id} OR ${u.admin})`;
   } else {
-    await sql`INSERT INTO partite (user_id, data, ora, casa, ospite, terza, campo, categoria, arbitro_nome, ar1, ar2, quarto, tmo, mto, lat, lon, indirizzo)
-      VALUES (${u.id}, ${p.data}, ${p.ora}, ${p.casa}, ${p.ospite}, ${p.terza}, ${p.campo}, ${p.categoria}, ${p.arbitro_nome}, ${p.ar1}, ${p.ar2}, ${p.quarto}, ${p.tmo}, ${p.mto}, ${p.lat}, ${p.lon}, ${p.indirizzo})`;
+    await sql`INSERT INTO partite (user_id, data, ora, casa, ospite, terza, campo, categoria, arbitro_nome, ar1, ar2, quarto, quinto, sesto, tmo, mto, lat, lon, indirizzo)
+      VALUES (${u.id}, ${p.data}, ${p.ora}, ${p.casa}, ${p.ospite}, ${p.terza}, ${p.campo}, ${p.categoria}, ${p.arbitro_nome}, ${p.ar1}, ${p.ar2}, ${p.quarto}, ${p.quinto}, ${p.sesto}, ${p.tmo}, ${p.mto}, ${p.lat}, ${p.lon}, ${p.indirizzo})`;
   }
   revalidatePath('/');
   redirect('/');

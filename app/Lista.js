@@ -13,7 +13,7 @@ export default async function Lista({ u, passate, cat = null }) {
   const site = `${h.get('x-forwarded-proto') || 'https'}://${h.get('host')}`;
   const rows = await sql`
     SELECT p.id, p.user_id, to_char(p.data,'YYYY-MM-DD') data, to_char(p.ora,'HH24:MI') ora, p.casa, p.ospite, p.terza, p.campo, p.categoria,
-      p.ar1, p.ar2, p.quarto, p.tmo, p.mto, p.lat, p.lon, p.indirizzo,
+      p.ar1, p.ar2, p.quarto, p.quinto, p.sesto, p.tmo, p.mto, p.lat, p.lon, p.indirizzo,
       COALESCE(p.arbitro_nome, u.nome || ' ' || u.cognome) arbitro, u.nome || ' ' || u.cognome autore,
       COALESCE((SELECT json_agg(json_build_object('id', x.id, 'n', x.nome || ' ' || x.cognome) ORDER BY x.cognome)
         FROM adesioni a JOIN users x ON x.id = a.user_id WHERE a.partita_id = p.id), '[]') ade
