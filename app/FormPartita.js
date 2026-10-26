@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { CATEGORIE, CON_TERNA, TERNA, TRIANGOLARE } from '@/lib/categorie';
+import { CATEGORIE, CON_TERNA, TRIANGOLARE, ruoli } from '@/lib/categorie';
 import { salvaPartita, eliminaPartita } from './actions';
 import Campo from './Campo';
 
@@ -27,7 +27,7 @@ export default function FormPartita({ p = {}, noti = [], io = '' }) {
       <Campo p={p} noti={noti} />
       {CON_TERNA.includes(cat) && <fieldset><legend>Team arbitrale</legend>
         <div className="two">
-          <label>Arbitro<input name="arbitro_nome" defaultValue={p.arbitro_nome ?? p.autore ?? io} required /></label>{TERNA.map(([k, l]) => <label key={k}>{l}<input name={k} defaultValue={p[k] ?? ''} /></label>)}</div>
+          <label>Arbitro<input name="arbitro_nome" defaultValue={p.arbitro_nome ?? p.autore ?? io} required /></label>{ruoli(cat).map(([k, l]) => <label key={k}>{l}<input name={k} defaultValue={p[k] ?? ''} /></label>)}</div>
       </fieldset>}
       <div className="actions"><button className="btn">Salva designazione</button></div>
     </form>
