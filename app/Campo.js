@@ -42,7 +42,7 @@ export default function Campo({ p, noti }) {
         <li key={i}><button type="button" onClick={() => { setPos(r); setRis(null); }}>
           <b>{r.nome}</b><span>{r.indirizzo}</span></button></li>))}</ul>}
       {pos ? <p className="ok">Posizione verificata · {pos.indirizzo || `${pos.lat.toFixed(4)}, ${pos.lon.toFixed(4)}`} · <a href={mapsUrl(pos.lat, pos.lon)} target="_blank" rel="noopener">Controlla su Google Maps</a></p>
-        : !ris && <p className="hint">Premi «Cerca» e scegli il risultato giusto: così il link a Google Maps porta esattamente al campo.</p>}
+        : !ris && <p className="hint">Consigliato: premi «Cerca» e scegli il risultato giusto, così il link a Google Maps porta esattamente al campo. Se non lo trovi puoi salvare lo stesso: il link cercherà il campo per nome.</p>}
     </div>
   );
 }

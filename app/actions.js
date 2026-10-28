@@ -42,8 +42,8 @@ function leggiPartita(f, back) {
   const ok = ruoli(p.categoria).map(([k]) => k);
   for (const [k] of TERNA) p[k] = ok.includes(k) ? S(f, k) || null : null;
   const lat = parseFloat(f.get('lat')), lon = parseFloat(f.get('lon'));
-  if (!Number.isFinite(lat) || !Number.isFinite(lon)) err(back, 'Verifica il campo sulla mappa prima di salvare');
-  Object.assign(p, { lat, lon, indirizzo: s(f, 'indirizzo') || null });
+  const geo = Number.isFinite(lat) && Number.isFinite(lon);
+  Object.assign(p, { lat: geo ? lat : null, lon: geo ? lon : null, indirizzo: geo ? s(f, 'indirizzo') || null : null });
   return p;
 }
 
