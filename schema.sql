@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS partite (
   casa TEXT NOT NULL,
   ospite TEXT NOT NULL,
   terza TEXT,
+  creata TIMESTAMPTZ DEFAULT now(),
   campo TEXT NOT NULL,
   categoria TEXT NOT NULL,
   arbitro_nome TEXT,
